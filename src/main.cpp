@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include <random>
 
 #include <boost/asio.hpp>
 
@@ -35,11 +36,17 @@ int main(int argc, char *argv[])
 
             std::cout << "[SERVER-RESPONSE]: " << response_message << std::endl;
             
-            std::string message;
-            std::cout << "[CLIENT]: Enter a message to the server: ";
-            std::getline(std::cin, message);
+            std::random_device rd; // Obtém uma semente aleatória para o gerador
+            std::mt19937 gen(rd()); // Cria o gerador de números aleatórios
+            std::uniform_int_distribution<int> dis(0, 9); // Cria uma distribuição uniforme de inteiros entre 0 e 9
+            
+            std::string numero;
+            
+            // Gera 30 dígitos aleatórios
+            for (int i = 0; i < 30; i++)
+                numero += std::to_string(dis(gen));
 
-            boost::asio::write(socket, boost::asio::buffer(message + "\n"));
+            boost::asio::write(socket, boost::asio::buffer(numero + "\n"));
         }
 
         socket.shutdown(tcp::socket::shutdown_both);
