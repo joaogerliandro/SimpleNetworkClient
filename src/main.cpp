@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
 
             std::string response_message = boost::asio::buffer_cast<const char*>(response_buffer.data());
 
+            response_message.erase(std::remove(response_message.begin(), response_message.end(), '\n'), response_message.cend());
+
             std::cout << "[SERVER-RESPONSE]: " << response_message << std::endl;
             
             std::string message;
