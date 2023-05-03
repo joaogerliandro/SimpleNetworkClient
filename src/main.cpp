@@ -2,6 +2,7 @@
 #include <string>
 #include <thread>
 #include <random>
+#include <chrono>
 
 #include <boost/asio.hpp>
 
@@ -42,6 +43,8 @@ int main(int argc, char *argv[])
             
             std::string numero;
             
+            std::this_thread::sleep_for(std::chrono::seconds(10));
+
             // Gera 30 dígitos aleatórios
             for (int i = 0; i < 30; i++)
                 numero += std::to_string(dis(gen));
