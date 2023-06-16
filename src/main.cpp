@@ -37,19 +37,11 @@ int main(int argc, char *argv[])
 
             std::cout << "[SERVER-RESPONSE]: " << response_message << std::endl;
             
-            std::random_device rd; // Obtém uma semente aleatória para o gerador
-            std::mt19937 gen(rd()); // Cria o gerador de números aleatórios
-            std::uniform_int_distribution<int> dis(0, 9); // Cria uma distribuição uniforme de inteiros entre 0 e 9
-            
-            std::string numero;
-            
-            std::this_thread::sleep_for(std::chrono::seconds(10));
+            std::cout << "[CLIENT]: Insert a new mensage: "; 
 
-            // Gera 30 dígitos aleatórios
-            for (int i = 0; i < 30; i++)
-                numero += std::to_string(dis(gen));
+            std::getline(std::cin, response_message);
 
-            boost::asio::write(socket, boost::asio::buffer(numero + "\n"));
+            boost::asio::write(socket, boost::asio::buffer(response_message + "\n"));
         }
 
         socket.shutdown(tcp::socket::shutdown_both);
