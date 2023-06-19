@@ -78,6 +78,8 @@ int main(int argc, char *argv[])
 
         std::cout << "[CLIENT]: Server connection established !" << std::endl;
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
         std::thread listen_thread(listen_server, std::ref(socket));
         std::thread reply_thread(reply_server, std::ref(socket));
 
