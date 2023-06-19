@@ -21,7 +21,7 @@ void listen_server(tcp::socket &socket)
 
             std::string response_message = boost::asio::buffer_cast<const char *>(response_buffer.data());
 
-            response_message.erase(std::remove(response_message.begin(), response_message.end(), '\n'), response_message.cend());
+            response_message.erase(std::prev(response_message.cend()));
 
             std::cout << response_message << std::endl;
 
