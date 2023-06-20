@@ -5,6 +5,7 @@
 using boost::asio::ip::tcp;
 
 bool server_listened = false;
+bool server_handshake = true;
 
 void listen_server(tcp::socket &socket)
 {
@@ -19,7 +20,13 @@ void listen_server(tcp::socket &socket)
 
             response_message.erase(std::prev(response_message.cend()));
 
-            std::cout << response_message << std::endl;
+            if(response_message == "NOK")
+            {
+                std::cout << "Invalid input, try again !" << std::endl;
+                server_handshake = true;
+            }
+            else
+                std::cout << response_message << std::endl;
 
             server_listened = true;
         }
@@ -40,7 +47,13 @@ void reply_server(tcp::socket &socket)
             {
                 std::string response_message;
 
-                std::cout << "[CLIENT]: Insert a new mensage: ";
+                if(server_handshake)
+                {
+                    std::cout << "[CLIENT]: Choose a room: ";
+                    server_handshake = false;
+                }
+                else
+                    std::cout << "[CLIENT]: Insert a new mensage: ";
 
                 std::getline(std::cin, response_message);
 
