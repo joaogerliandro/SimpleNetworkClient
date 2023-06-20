@@ -1,10 +1,6 @@
-#include <iostream>
-#include <string>
-#include <thread>
-#include <random>
-#include <chrono>
+#include <standard_libs.h>
 
-#include <boost/asio.hpp>
+#include <common.h>
 
 using boost::asio::ip::tcp;
 
@@ -62,8 +58,10 @@ void reply_server(tcp::socket &socket)
 
 int main(int argc, char *argv[])
 {
-    std::string hostname{"localhost"};
-    std::string port{"4444"};
+    Config config("config.cfg");
+
+    std::string hostname{config.hostname};
+    std::string port{config.port};
 
     try
     {
