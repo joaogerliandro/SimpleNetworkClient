@@ -45,7 +45,7 @@
     <item>
      <widget class="QLineEdit" name="Hostname">
       <property name="text">
-       <string/>
+       <string>127.0.0.1</string>
       </property>
       <property name="maxLength">
        <number>15</number>
@@ -61,7 +61,7 @@
     <item>
      <widget class="QLineEdit" name="Port">
       <property name="text">
-       <string/>
+       <string>4444</string>
       </property>
       <property name="maxLength">
        <number>5</number>

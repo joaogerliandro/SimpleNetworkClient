@@ -37,7 +37,7 @@ void MainWindow::on_Connect_clicked()
 
         std::cout << "[CLIENT]: Server connection established !" << std::endl;
 
-        room_menu = new RoomMenuWindow();
+        room_menu = new RoomMenuWindow(socket);
 
         room_menu->show();
 

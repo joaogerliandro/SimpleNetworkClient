@@ -13,13 +13,15 @@ class RoomMenuWindow : public QWidget
 {
     Q_OBJECT
 
-public:
-    explicit RoomMenuWindow(QWidget *parent = nullptr);
+    public:
+        explicit RoomMenuWindow(boost::asio::ip::tcp::socket &socket, QWidget *parent = nullptr);
 
-    ~RoomMenuWindow();
+        ~RoomMenuWindow();
 
-private:
-    Ui::RoomMenuWindow *ui;
+    private:
+        Ui::RoomMenuWindow *ui;
+
+        void connection_handshake(boost::asio::ip::tcp::socket &socket);
 };
 
 #endif // ROOMMENUWINDOW_H
