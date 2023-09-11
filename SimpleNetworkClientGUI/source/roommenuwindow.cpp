@@ -88,5 +88,12 @@ void RoomMenuWindow::load_roomlist(std::string server_room_list)
     }
 }
 
+void RoomMenuWindow::on_RoomList_itemDoubleClicked(QListWidgetItem *item)
+{
+    chat_room = new ChatRoomWindow();
 
+    chat_room->show();
+
+    this->close();
+}
 
