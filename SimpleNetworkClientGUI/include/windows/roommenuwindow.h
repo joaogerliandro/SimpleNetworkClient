@@ -21,7 +21,11 @@ class RoomMenuWindow : public QWidget
     private:
         Ui::RoomMenuWindow *ui;
 
+        std::vector<Room> room_list;
+
         void connection_handshake(boost::asio::ip::tcp::socket &socket);
+
+        void load_roomlist(std::string server_room_list);
 };
 
 #endif // ROOMMENUWINDOW_H
