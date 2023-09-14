@@ -1,15 +1,11 @@
-#include <standard_libs.h>
-
-#include <common.h>
-
 #include <windows/mainwindow.h>
 #include "./ui_mainwindow.h"
 
-using boost::asio::ip::tcp;
-
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+MainWindow::MainWindow(boost::asio::ip::tcp::socket &socket, boost::asio::ip::tcp::resolver &resolver, QWidget *parent) :
+    main_socket(socket),
+    main_resolver(resolver),
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 }
@@ -26,18 +22,13 @@ void MainWindow::on_Connect_clicked()
 
     try
     {
-        boost::asio::io_context io_context;
-
-        tcp::socket socket(io_context);
-        tcp::resolver resolver(io_context);
-
         std::cout << "[CLIENT]: Trying to connect to the server ..." << std::endl;
 
-        boost::asio::connect(socket, resolver.resolve({hostname, port}));
+        boost::asio::connect(main_socket, main_resolver.resolve({hostname, port}));
 
         std::cout << "[CLIENT]: Server connection established !" << std::endl;
 
-        room_menu = new RoomMenuWindow(socket);
+        room_menu = new RoomMenuWindow(main_socket);
 
         room_menu->show();
 
