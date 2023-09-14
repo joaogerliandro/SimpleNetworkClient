@@ -3,6 +3,8 @@
 
 #include <common.h>
 
+#include <entities/room.h>
+
 #include <windows/chatroomwindow.h>
 
 #include <QWidget>
@@ -24,13 +26,17 @@ class RoomMenuWindow : public QWidget
     private:
         Ui::RoomMenuWindow *ui;
 
-        ChatRoomWindow *chat_room;
+        boost::asio::ip::tcp::socket &server_socket;
 
         std::vector<Room> room_list;
 
-        void connection_handshake(boost::asio::ip::tcp::socket &socket);
+        ChatRoomWindow *chat_room;
+
+        void connection_handshake();
 
         void load_roomlist(std::string server_room_list);
+
+        void connect_client_to_room(Room choosed_room);
 
     private slots:
         void on_RoomList_itemDoubleClicked(QListWidgetItem *item);

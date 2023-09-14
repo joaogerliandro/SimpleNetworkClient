@@ -1,15 +1,14 @@
-#include <entities/room.h>
-
 #include <windows/roommenuwindow.h>
 #include "ui_roommenuwindow.h"
 
 RoomMenuWindow::RoomMenuWindow(boost::asio::ip::tcp::socket &socket, QWidget *parent) :
+    server_socket(socket),
     QWidget(parent),
     ui(new Ui::RoomMenuWindow)
 {
     ui->setupUi(this);
 
-    connection_handshake(socket);
+    connection_handshake();
 }
 
 RoomMenuWindow::~RoomMenuWindow()
@@ -17,12 +16,12 @@ RoomMenuWindow::~RoomMenuWindow()
     delete ui;
 }
 
-void RoomMenuWindow::connection_handshake(boost::asio::ip::tcp::socket &socket)
+void RoomMenuWindow::connection_handshake()
 {
     try
     {
         boost::asio::streambuf response_buffer;
-        boost::asio::read_until(socket, response_buffer, '\n');
+        boost::asio::read_until(server_socket, response_buffer, '\n');
 
         std::string response_message = boost::asio::buffer_cast<const char *>(response_buffer.data());
 
@@ -32,7 +31,14 @@ void RoomMenuWindow::connection_handshake(boost::asio::ip::tcp::socket &socket)
 
         for(Room room : room_list)
         {
-            ui->RoomList->addItem(QString::fromStdString(std::to_string(room.get_id()) + " - " + room.get_name() + " - " + std::to_string(room.get_connected_clients()) + " / " + std::to_string(room.get_size())));
+            QListWidgetItem *newItem = new QListWidgetItem;
+
+            newItem->setData(Qt::UserRole, room.get_id());
+
+            newItem->setText(QString::fromStdString(room.get_name() + " - " + std::to_string(room.get_connected_clients()) + " / " + std::to_string(room.get_size())));
+            newItem->setTextAlignment(Qt::AlignmentFlag::AlignCenter);
+
+            ui->RoomList->addItem(newItem);
         }
     }
     catch (const std::exception &e)
@@ -90,7 +96,14 @@ void RoomMenuWindow::load_roomlist(std::string server_room_list)
 
 void RoomMenuWindow::on_RoomList_itemDoubleClicked(QListWidgetItem *item)
 {
-    chat_room = new ChatRoomWindow();
+    for(Room room : room_list)
+        if(room.get_id() == item->data(Qt::UserRole))
+            connect_client_to_room(room);
+}
+
+void RoomMenuWindow::connect_client_to_room(Room choosed_room)
+{
+    chat_room = new ChatRoomWindow(choosed_room, server_socket);
 
     chat_room->show();
 
