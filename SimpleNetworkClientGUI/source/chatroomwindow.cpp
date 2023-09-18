@@ -1,7 +1,7 @@
 #include <windows/chatroomwindow.h>
 #include "ui_chatroomwindow.h"
 
-void listen_server(boost::asio::ip::tcp::socket &socket)
+void listen_server(boost::asio::ip::tcp::socket &socket, Ui::ChatRoomWindow *ui)
 {
     try
     {
@@ -14,7 +14,7 @@ void listen_server(boost::asio::ip::tcp::socket &socket)
 
             response_message.erase(std::prev(response_message.cend()));
 
-            std::cout << response_message << std::endl;
+            ui->ChatHistory->append(QString::fromStdString(response_message));
         }
     }
     catch (const std::exception &e)
@@ -44,5 +44,34 @@ void ChatRoomWindow::setup_chatroom(Room chat_room)
 
     this->setWindowTitle(QString::fromStdString(chat_room.get_name()));
 
-    std::thread(listen_server, std::ref(server_socket)).detach();
+    std::thread(listen_server, std::ref(server_socket), ui).detach();
 }
+
+void ChatRoomWindow::on_SendButton_clicked()
+{  
+    std::string reply_message = ui->InputLine->text().toStdString();
+
+    if(!reply_message.empty())
+    {
+        ui->InputLine->clear();
+        ui->InputLine->setCursorPosition(0);
+        ui->InputLine->setFocus();
+
+        boost::asio::write(server_socket, boost::asio::buffer(reply_message + "\n"));
+    }
+}
+
+void ChatRoomWindow::on_InputLine_returnPressed()
+{
+    std::string reply_message = ui->InputLine->text().toStdString();
+
+    if(!reply_message.empty())
+    {
+        ui->InputLine->clear();
+        ui->InputLine->setCursorPosition(0);
+        ui->InputLine->setFocus();
+
+        boost::asio::write(server_socket, boost::asio::buffer(reply_message + "\n"));
+    }
+}
+

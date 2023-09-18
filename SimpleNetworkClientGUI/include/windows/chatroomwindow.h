@@ -20,7 +20,12 @@ class ChatRoomWindow : public QWidget
         explicit ChatRoomWindow(Room chat_room, boost::asio::ip::tcp::socket &socket, QWidget *parent = nullptr);
         ~ChatRoomWindow();
 
-    private:
+private slots:
+    void on_SendButton_clicked();
+
+    void on_InputLine_returnPressed();
+
+private:
         Ui::ChatRoomWindow *ui;
 
         boost::asio::ip::tcp::socket &server_socket;
