@@ -14,7 +14,7 @@ void listen_server(boost::asio::ip::tcp::socket &socket, Ui::ChatRoomWindow *ui)
 
             response_message.erase(std::prev(response_message.cend()));
 
-            ui->ChatHistory->append(QString::fromStdString(response_message));
+            ui->ChatHistory->append(QString::fromStdString(response_message));            
         }
     }
     catch (const std::exception &e)
@@ -73,5 +73,12 @@ void ChatRoomWindow::on_InputLine_returnPressed()
 
         boost::asio::write(server_socket, boost::asio::buffer(reply_message + "\n"));
     }
+}
+
+void ChatRoomWindow::on_ChatHistory_textChanged()
+{
+    QScrollBar *chat_scrollbar = ui->ChatHistory->verticalScrollBar();
+
+    chat_scrollbar->setValue(chat_scrollbar->maximum());
 }
 

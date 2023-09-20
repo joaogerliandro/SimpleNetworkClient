@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include <QKeyEvent>
+#include <QScrollBar>
 
 namespace Ui {
     class ChatRoomWindow;
@@ -24,6 +25,8 @@ private slots:
     void on_SendButton_clicked();
 
     void on_InputLine_returnPressed();
+
+    void on_ChatHistory_textChanged();
 
 private:
         Ui::ChatRoomWindow *ui;
