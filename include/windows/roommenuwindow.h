@@ -9,6 +9,7 @@
 
 #include <QWidget>
 #include <QListWidgetItem>
+#include <QMessageBox>
 
 namespace Ui {
 class RoomMenuWindow;

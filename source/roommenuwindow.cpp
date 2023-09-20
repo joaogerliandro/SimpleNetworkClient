@@ -103,10 +103,18 @@ void RoomMenuWindow::on_RoomList_itemDoubleClicked(QListWidgetItem *item)
 
 void RoomMenuWindow::connect_client_to_room(Room choosed_room)
 {
-    chat_room = new ChatRoomWindow(choosed_room, server_socket);
+    if(choosed_room.get_connected_clients() < choosed_room.get_size())
+    {
+        chat_room = new ChatRoomWindow(choosed_room, server_socket);
 
-    chat_room->show();
+        chat_room->show();
 
-    this->close();
+        this->close();
+    }
+    else
+    {
+        QMessageBox *message_box = new QMessageBox(QMessageBox::Icon::Warning, "This room is current full !", "Try again later or try enter in another room !", QMessageBox::Button::Ok, this);
+        message_box->open();
+    }
 }
 
