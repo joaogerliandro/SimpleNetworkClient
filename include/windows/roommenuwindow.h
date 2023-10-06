@@ -20,7 +20,7 @@ class RoomMenuWindow : public QWidget
     Q_OBJECT
 
     public:
-        explicit RoomMenuWindow(boost::asio::ip::tcp::socket &socket, QWidget *parent = nullptr);
+        explicit RoomMenuWindow(boost::asio::ip::tcp::socket &socket, std::string username, QWidget *parent = nullptr);
 
         ~RoomMenuWindow();
 
@@ -28,6 +28,8 @@ class RoomMenuWindow : public QWidget
         Ui::RoomMenuWindow *ui;
 
         boost::asio::ip::tcp::socket &server_socket;
+
+        std::string client_username;
 
         std::vector<Room> room_list;
 

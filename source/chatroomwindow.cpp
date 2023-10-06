@@ -23,7 +23,7 @@ void listen_server(boost::asio::ip::tcp::socket &socket, Ui::ChatRoomWindow *ui)
     }
 }
 
-ChatRoomWindow::ChatRoomWindow(Room chat_room, boost::asio::ip::tcp::socket &socket, QWidget *parent)
+ChatRoomWindow::ChatRoomWindow(boost::asio::ip::tcp::socket &socket, Room chat_room, QWidget *parent)
     : server_socket(socket),
     QWidget(parent),
     ui(new Ui::ChatRoomWindow)

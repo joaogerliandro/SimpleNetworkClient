@@ -1,8 +1,9 @@
 #include <windows/roommenuwindow.h>
 #include "ui_roommenuwindow.h"
 
-RoomMenuWindow::RoomMenuWindow(boost::asio::ip::tcp::socket &socket, QWidget *parent) :
+RoomMenuWindow::RoomMenuWindow(boost::asio::ip::tcp::socket &socket, std::string username, QWidget *parent) :
     server_socket(socket),
+    client_username(username),
     QWidget(parent),
     ui(new Ui::RoomMenuWindow)
 {
@@ -20,6 +21,8 @@ void RoomMenuWindow::connection_handshake()
 {
     try
     {
+        boost::asio::write(server_socket, boost::asio::buffer(client_username + "\n"));
+
         boost::asio::streambuf response_buffer;
         boost::asio::read_until(server_socket, response_buffer, '\n');
 
@@ -105,7 +108,7 @@ void RoomMenuWindow::connect_client_to_room(Room choosed_room)
 {
     if(choosed_room.get_connected_clients() < choosed_room.get_size())
     {
-        chat_room = new ChatRoomWindow(choosed_room, server_socket);
+        chat_room = new ChatRoomWindow(server_socket, choosed_room);
 
         chat_room->show();
 

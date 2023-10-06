@@ -18,7 +18,7 @@ class ChatRoomWindow : public QWidget
     Q_OBJECT
 
     public:
-        explicit ChatRoomWindow(Room chat_room, boost::asio::ip::tcp::socket &socket, QWidget *parent = nullptr);
+        explicit ChatRoomWindow(boost::asio::ip::tcp::socket &socket, Room chat_room, QWidget *parent = nullptr);
         ~ChatRoomWindow();
 
 private slots:
