@@ -8,6 +8,8 @@
 #include <QWidget>
 #include <QKeyEvent>
 #include <QScrollBar>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 namespace Ui {
     class ChatRoomWindow;
@@ -33,7 +35,12 @@ private:
 
         boost::asio::ip::tcp::socket &server_socket;
 
+        QMediaPlayer *media_player;
+        QAudioOutput *audio_output;
+
         void setup_chatroom(Room chat_room);
+
+        void setup_mediaplayer();
 };
 
 #endif // CHATROOMWINDOW_H
