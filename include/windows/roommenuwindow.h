@@ -20,7 +20,7 @@ class RoomMenuWindow : public QWidget
     Q_OBJECT
 
     public:
-        explicit RoomMenuWindow(boost::asio::ip::tcp::socket &socket, std::string username, QWidget *parent = nullptr);
+        explicit RoomMenuWindow(boost::asio::ip::tcp::socket &socket, QWidget *parent = nullptr);
 
         ~RoomMenuWindow();
 
@@ -29,15 +29,13 @@ class RoomMenuWindow : public QWidget
 
         boost::asio::ip::tcp::socket &server_socket;
 
-        std::string client_username;
-
         std::vector<Room> room_list;
 
         ChatRoomWindow *chat_room;
 
-        void connection_handshake();
+        void load_roomlist();
 
-        void load_roomlist(std::string server_room_list);
+        void parse_roomlist(std::string server_room_list);
 
         void connect_client_to_room(Room choosed_room);
 

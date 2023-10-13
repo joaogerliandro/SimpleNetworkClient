@@ -40,7 +40,9 @@ void MainWindow::on_Connect_clicked()
     {
         boost::asio::connect(main_socket, main_resolver.resolve({hostname, port}));
 
-        room_menu = new RoomMenuWindow(main_socket, username);
+        boost::asio::write(main_socket, boost::asio::buffer(username + "\n"));
+
+        room_menu = new RoomMenuWindow(main_socket);
 
         room_menu->show();
 

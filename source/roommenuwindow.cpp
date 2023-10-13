@@ -1,15 +1,14 @@
 #include <windows/roommenuwindow.h>
 #include "ui_roommenuwindow.h"
 
-RoomMenuWindow::RoomMenuWindow(boost::asio::ip::tcp::socket &socket, std::string username, QWidget *parent) :
+RoomMenuWindow::RoomMenuWindow(boost::asio::ip::tcp::socket &socket, QWidget *parent) :
     server_socket(socket),
-    client_username(username),
     QWidget(parent),
     ui(new Ui::RoomMenuWindow)
 {
     ui->setupUi(this);
 
-    connection_handshake();
+    load_roomlist();
 }
 
 RoomMenuWindow::~RoomMenuWindow()
@@ -17,11 +16,11 @@ RoomMenuWindow::~RoomMenuWindow()
     delete ui;
 }
 
-void RoomMenuWindow::connection_handshake()
+void RoomMenuWindow::load_roomlist()
 {
     try
     {
-        boost::asio::write(server_socket, boost::asio::buffer(client_username + "\n"));
+        boost::asio::write(server_socket, boost::asio::buffer("LIST_OPEN_ROOMS\n"));
 
         boost::asio::streambuf response_buffer;
         boost::asio::read_until(server_socket, response_buffer, '\n');
@@ -30,7 +29,7 @@ void RoomMenuWindow::connection_handshake()
 
         response_message.erase(std::prev(response_message.cend()));
 
-        load_roomlist(response_message);
+        parse_roomlist(response_message);
 
         for(Room room : room_list)
         {
@@ -50,7 +49,7 @@ void RoomMenuWindow::connection_handshake()
     }
 }
 
-void RoomMenuWindow::load_roomlist(std::string server_room_list)
+void RoomMenuWindow::parse_roomlist(std::string server_room_list)
 {
     std::stringstream room_list_str_stream(server_room_list);
     std::string room_info;
