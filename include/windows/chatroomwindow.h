@@ -23,24 +23,24 @@ class ChatRoomWindow : public QWidget
         explicit ChatRoomWindow(boost::asio::ip::tcp::socket &socket, Room chat_room, QWidget *parent = nullptr);
         ~ChatRoomWindow();
 
-private slots:
-    void on_SendButton_clicked();
-
-    void on_InputLine_returnPressed();
-
-    void on_ChatHistory_textChanged();
-
-private:
-        Ui::ChatRoomWindow *ui;
-
-        boost::asio::ip::tcp::socket &server_socket;
-
         QMediaPlayer *media_player;
         QAudioOutput *audio_output;
 
-        void setup_chatroom(Room chat_room);
+        boost::asio::ip::tcp::socket &server_socket;
 
-        void setup_mediaplayer();
+    private slots:
+        void on_SendButton_clicked();
+
+        void on_InputLine_returnPressed();
+
+        void on_ChatHistory_textChanged();
+
+    private:
+            Ui::ChatRoomWindow *ui;
+
+            void setup_chatroom(Room chat_room);
+
+            void setup_mediaplayer();
 };
 
 #endif // CHATROOMWINDOW_H

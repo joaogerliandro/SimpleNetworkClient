@@ -1,25 +1,27 @@
 #include <windows/chatroomwindow.h>
 #include "ui_chatroomwindow.h"
 
-void listen_server(boost::asio::ip::tcp::socket &socket, Ui::ChatRoomWindow *ui, QMediaPlayer *media_player)
+void listen_server(ChatRoomWindow *widget, Ui::ChatRoomWindow *ui)
 {
     try
     {
-        media_player->setSource(QUrl::fromLocalFile("resources\\sounds\\steam-notf.mp3"));
-        media_player->audioOutput()->setVolume(100);
+        widget->media_player->setSource(QUrl::fromLocalFile("resources\\sounds\\steam-notf.mp3"));
+        widget->media_player->audioOutput()->setVolume(100);
 
         while (true)
         {
             boost::asio::streambuf response_buffer;
-            boost::asio::read_until(socket, response_buffer, '\n');
+            boost::asio::read_until(widget->server_socket, response_buffer, '\n');
 
             std::string response_message = boost::asio::buffer_cast<const char *>(response_buffer.data());
 
+            widget->media_player->play();
+
             response_message.erase(std::prev(response_message.cend()));
 
-            media_player->play();
-
             ui->ChatHistory->append(QString::fromStdString(response_message));
+
+            QApplication::alert(widget);
         }
     }
     catch (const std::exception &e)
@@ -51,7 +53,7 @@ void ChatRoomWindow::setup_chatroom(Room chat_room)
 
     this->setWindowTitle(QString::fromStdString(chat_room.get_name()));
 
-    std::thread(listen_server, std::ref(server_socket), ui, media_player).detach();
+    std::thread(listen_server, this, ui).detach();
 }
 
 void ChatRoomWindow::setup_mediaplayer()
