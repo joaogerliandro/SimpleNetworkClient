@@ -1,7 +1,6 @@
-#ifndef ROOM_H
-#define ROOM_H
+#pragma once
 
-#include <string>
+#include <standard_libs.h>
 
 class Room
 {
@@ -22,5 +21,3 @@ class Room
         uint8_t m_connected_clients;
         std::string m_name;
 };
-
-#endif // ROOM_H

@@ -3,7 +3,7 @@
 
 #include <common.h>
 
-#include <entities/room.h>
+#include <entities.h>
 
 #include <windows/chatroomwindow.h>
 

@@ -21,8 +21,14 @@ void RoomMenuWindow::connection_handshake()
 {
     try
     {
-        // Envia a mensagem com o user name
-        boost::asio::write(server_socket, boost::asio::buffer(client_username + "\n"));
+        json handshake_content = {{"Username", client_username}};
+
+        Message handshake_message(server_socket.remote_endpoint().address().to_v4().to_string(),
+                                  server_socket.remote_endpoint().port(),
+                                  handshake_content.dump(),
+                                  MESSAGE_TYPE::HANDSHAKING);
+
+        boost::asio::write(server_socket, boost::asio::buffer(handshake_message.to_string() + "\n"));
 
         boost::asio::streambuf response_buffer;
         boost::asio::read_until(server_socket, response_buffer, '\n');
