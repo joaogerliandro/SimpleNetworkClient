@@ -40,6 +40,7 @@ set(PROJECT_SOURCES
 )
 
 find_package(Boost REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -80,6 +81,13 @@ target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
     ${Boost_LIBRARIES}
+)
+
+# Other linked libraries
+target_link_libraries(
+    ${PROJECT_NAME}
+    PRIVATE
+    nlohmann_json::nlohmann_json
 )
 
 if(WIN32)

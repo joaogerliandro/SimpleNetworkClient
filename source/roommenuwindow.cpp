@@ -21,6 +21,7 @@ void RoomMenuWindow::connection_handshake()
 {
     try
     {
+        // Envia a mensagem com o user name
         boost::asio::write(server_socket, boost::asio::buffer(client_username + "\n"));
 
         boost::asio::streambuf response_buffer;
