@@ -13,13 +13,16 @@ void listen_server(ChatRoomWindow *widget, Ui::ChatRoomWindow *ui)
             boost::asio::streambuf response_buffer;
             boost::asio::read_until(widget->server_socket, response_buffer, '\n');
 
-            std::string response_message = boost::asio::buffer_cast<const char *>(response_buffer.data());
-
             widget->media_player->play();
 
-            response_message.erase(std::prev(response_message.cend()));
+            std::string response_message_str = boost::asio::buffer_cast<const char *>(response_buffer.data());
+            response_message_str.erase(std::prev(response_message_str.cend()));
 
-            ui->ChatHistory->append(QString::fromStdString(response_message));
+            Message response_message(response_message_str);
+
+            json message_content = json::parse(response_message.m_content);
+
+            ui->ChatHistory->append(QString::fromStdString(message_content["Message"]));
 
             QApplication::alert(widget);
         }
@@ -70,29 +73,37 @@ void ChatRoomWindow::setup_mediaplayer()
 
 void ChatRoomWindow::on_SendButton_clicked()
 {  
-    std::string reply_message = ui->InputLine->text().toStdString();
+    std::string reply_message_str = ui->InputLine->text().toStdString();
 
-    if(!reply_message.empty())
+    if(!reply_message_str.empty())
     {
         ui->InputLine->clear();
         ui->InputLine->setCursorPosition(0);
         ui->InputLine->setFocus();
 
-        boost::asio::write(server_socket, boost::asio::buffer(reply_message + "\n"));
+        json reply_message_json = {{"Message", reply_message_str}};
+
+        Message reply_message(server_socket.remote_endpoint().address().to_v4().to_string(), server_socket.remote_endpoint().port(), reply_message_json.dump(), MESSAGE_TYPE::FORWARD);
+
+        boost::asio::write(server_socket, boost::asio::buffer(reply_message.to_string() + "\n"));
     }
 }
 
 void ChatRoomWindow::on_InputLine_returnPressed()
 {
-    std::string reply_message = ui->InputLine->text().toStdString();
+    std::string reply_message_str = ui->InputLine->text().toStdString();
 
-    if(!reply_message.empty())
+    if(!reply_message_str.empty())
     {
         ui->InputLine->clear();
         ui->InputLine->setCursorPosition(0);
         ui->InputLine->setFocus();
 
-        boost::asio::write(server_socket, boost::asio::buffer(reply_message + "\n"));
+        json reply_message_json = {{"Message", reply_message_str}};
+
+        Message reply_message(server_socket.remote_endpoint().address().to_v4().to_string(), server_socket.remote_endpoint().port(), reply_message_json.dump(), MESSAGE_TYPE::FORWARD);
+
+        boost::asio::write(server_socket, boost::asio::buffer(reply_message.to_string() + "\n"));
     }
 }
 
