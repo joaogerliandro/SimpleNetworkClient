@@ -49,7 +49,11 @@ ChatRoomWindow::~ChatRoomWindow()
 
 void ChatRoomWindow::setup_chatroom(Room chat_room)
 {
-    boost::asio::write(server_socket, boost::asio::buffer(std::to_string(chat_room.get_id()) + "\n"));
+    json message_content_json = {{"RoomId", chat_room.get_id()}};
+
+    Message enter_room_message(server_socket.remote_endpoint().address().to_v4().to_string(), server_socket.remote_endpoint().port(), message_content_json.dump(), MESSAGE_TYPE::ROOM_CHOICE);
+
+    boost::asio::write(server_socket, boost::asio::buffer(enter_room_message.to_string() + "\n"));
 
     this->setWindowTitle(QString::fromStdString(chat_room.get_name()));
 
