@@ -33,11 +33,13 @@ void RoomMenuWindow::connection_handshake()
         boost::asio::streambuf response_buffer;
         boost::asio::read_until(server_socket, response_buffer, '\n');
 
-        std::string response_message = boost::asio::buffer_cast<const char *>(response_buffer.data());
+        std::string response_message_str = boost::asio::buffer_cast<const char *>(response_buffer.data());
 
-        response_message.erase(std::prev(response_message.cend()));
+        response_message_str.erase(std::prev(response_message_str.cend()));
 
-        load_roomlist(response_message);
+        Message response_message(response_message_str);
+
+        load_roomlist(response_message.m_content);
 
         for(Room room : room_list)
         {
@@ -59,49 +61,15 @@ void RoomMenuWindow::connection_handshake()
 
 void RoomMenuWindow::load_roomlist(std::string server_room_list)
 {
-    std::stringstream room_list_str_stream(server_room_list);
-    std::string room_info;
+    json server_room_list_json = (json::parse(server_room_list))["RoomList"];
 
-    while(std::getline(room_list_str_stream, room_info))
+    for(json room_json : server_room_list_json)
     {
-        std::stringstream room_info_str_stream(room_info);
-        std::string room_entitie_field;
-
-        uint8_t room_id;
-        uint8_t room_size;
-        uint8_t room_connected_clients;
-        std::string room_name;
-
-        while(std::getline(room_info_str_stream, room_entitie_field, ';'))
-        {
-            std::stringstream room_entitie_field_str_stream(room_entitie_field);
-
-            std::string field_name;
-            std::string field_value;
-
-            std::getline(room_entitie_field_str_stream, field_name, ':');
-            std::getline(room_entitie_field_str_stream, field_value);
-
-            if(field_name == "ID")
-            {
-                room_id = static_cast<uint8_t>(std::stoul(field_value));
-            }
-            else if(field_name == "Name")
-            {
-                room_name = field_value;
-            }
-            else if(field_name == "Size")
-            {
-                room_size = static_cast<uint8_t>(std::stoul(field_value));
-            }
-            else if(field_name == "Connected")
-            {
-                room_connected_clients = static_cast<uint8_t>(std::stoul(field_value));
-            }
-        }
-
-        room_list.push_back(Room(room_id, room_size, room_connected_clients, room_name));
+        room_list.push_back(
+            Room(room_json["ID"], room_json["Size"], room_json["ConnectedClients"], room_json["Name"])
+        );
     }
+
 }
 
 void RoomMenuWindow::on_RoomList_itemDoubleClicked(QListWidgetItem *item)
