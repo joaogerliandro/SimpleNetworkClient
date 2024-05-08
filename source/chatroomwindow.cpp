@@ -114,3 +114,8 @@ void ChatRoomWindow::on_ChatHistory_textChanged()
     chat_scrollbar->setValue(chat_scrollbar->maximum());
 }
 
+void ChatRoomWindow::closeEvent(QCloseEvent *event)
+{
+    std::cout << "TO-DO: Implement room exiting !" << std::endl;
+}
+

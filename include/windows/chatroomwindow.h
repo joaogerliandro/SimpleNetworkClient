@@ -41,6 +41,8 @@ class ChatRoomWindow : public QWidget
             void setup_chatroom(Room chat_room);
 
             void setup_mediaplayer();
+
+            void closeEvent(QCloseEvent *event);
 };
 
 #endif // CHATROOMWINDOW_H
